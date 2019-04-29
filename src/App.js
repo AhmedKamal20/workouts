@@ -1,42 +1,51 @@
 import React from 'react';
-import { FirebaseContext } from './Firebase';
+import {  BrowserRouter as Router , Route, Switch } from "react-router-dom";
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar'
-import TypoGraphy from '@material-ui/core/Typography'
-import { Home } from '@material-ui/icons'
+import Firebase, { FirebaseContext } from './clients/Firebase';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { red, blueGrey, green, blue, cyan } from '@material-ui/core/colors';
+
+import TopBar from './components/TopBar';
+import AddWorkOut from './components/AddWorkOut';
+import ListWorkOuts from './components/ListWorkOuts';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+    secondary: cyan,
+    error: red,
+    action: green,
+    background: {
+      default: blueGrey['60'],
+    }
+  },
+  typography: {
+    useNextVariants: true,
+  },
+});
 
 class App extends React.Component {
-
-  componentDidMount() {
-    const firebase = this.context;
-    firebase
-      .user("ASAS90")
-      .set({
-        username: "aKamal",
-        email: "aKamal@example.com",
-      });
-  }
-
   render() {
     return (
       <div>
-        <AppBar color="primary" position="static">
-          <Toolbar>
-            <Home />
-            <TypoGraphy variant="title"
-              color="inherit"
-            >
-              WorkOuts
-           </TypoGraphy>
-          </Toolbar>
-        </AppBar>
-
+        <MuiThemeProvider theme={theme}>
+          <CssBaseline />
+          <FirebaseContext.Provider value={new Firebase()}>
+            <Router>
+              <TopBar />
+              <Switch>
+                <Route path="/" exact />
+                <Route path="/workouts/new/" component={AddWorkOut} />
+                <Route path="/workouts/" component={ListWorkOuts} />
+              </Switch>
+            </Router>
+          </FirebaseContext.Provider>
+        </MuiThemeProvider>
       </div>
     );
   }
 }
-
-App.contextType = FirebaseContext;
 
 export default App;
