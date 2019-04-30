@@ -19,22 +19,24 @@ class AddWorkOut extends React.Component {
 
   constructor() {
     super();
-    this.state = {email: null, password: null, remember: null};
+    this.state = {workout: {}};
   }
 
   handleChange = (event) => {
+    let workout = {...this.state.workout}
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
-    this.setState({[name]: value});
+    workout[name] = value
+    this.setState({workout});
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
     const firebase = this.context;
     firebase
-      .user(uuidv4())
-      .set(this.state);
+      .workout(uuidv4())
+      .set(this.state.workout);
   }
 
   render() {
@@ -42,7 +44,7 @@ class AddWorkOut extends React.Component {
       <Grid item xs={12}>
         <Grid container justify="center" spacing={16}>
           <Grid item>
-            <Paper>
+            <Paper style={{padding: 15}}>
               <Avatar>
                 <Search />
               </Avatar>
