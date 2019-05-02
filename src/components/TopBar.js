@@ -64,6 +64,12 @@ class TopBar extends React.Component {
                 List All
               </Button>
             </Link>
+            <Link to="/routines/new">
+              <Button variant="outlined" size="small" className={classes.button}>
+                <List className={classes.leftIcon} />
+                New
+              </Button>
+            </Link>
             <div className={classes.grow} />
             <IconButton styles={{display: 'flex'}}>
               <AccountCircle />

@@ -29,6 +29,12 @@ class Firebase {
   workout = woid => this.db.ref(`workouts/${woid}`);
 
   workouts = () => this.db.ref('workouts');
+
+  // *** Routine API ***
+
+  routine = rid => this.db.ref(`routines/${rid}`);
+
+  routines = () => this.db.ref('routines');
 }
 
 const FirebaseContext = React.createContext(null);

@@ -10,6 +10,7 @@ import { red, blueGrey, green, blue, cyan } from '@material-ui/core/colors';
 import TopBar from './components/TopBar';
 import AddWorkOut from './components/AddWorkOut';
 import ListWorkOuts from './components/ListWorkOuts';
+import AddRoutine from './components/AddRoutine';
 
 const theme = createMuiTheme({
   palette: {
@@ -39,6 +40,8 @@ class App extends React.Component {
                 <Route path="/" exact />
                 <Route path="/workouts/new/" component={AddWorkOut} />
                 <Route path="/workouts/" component={ListWorkOuts} />
+                <Route path="/routines/new" component={AddRoutine} />
+                <Route path="/routines/" component={AddRoutine} />
               </Switch>
             </Router>
           </FirebaseContext.Provider>
