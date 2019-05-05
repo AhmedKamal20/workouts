@@ -23,7 +23,7 @@ import Avatar from '@material-ui/core/Avatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
 
-import { Folder, Delete } from '@material-ui/icons';
+import { FitnessCenter, Delete } from '@material-ui/icons';
 
 const bodyParts = [
   'Chest',
@@ -32,16 +32,7 @@ const bodyParts = [
 ];
 
 const initialState = {
-    workouts: [
-      {
-          uid: 1,
-          name: "Hello",
-      },
-      {
-          uid: 2,
-          name: "Hi",
-      },
-    ],
+    workouts: [],
     selectedWorkout: {
       workoutId: 0,
       sets: 0,
@@ -62,6 +53,35 @@ class AddRoutine extends React.Component {
   constructor() {
     super();
     this.state = initialState;
+  }
+
+  componentDidMount() {
+    this.setState({ loading: true });
+    const firebase = this.context;
+
+    firebase.workouts().on('value', snapshot => {
+      if (snapshot.exists()) {
+        const workoutsObject = snapshot.val();
+        const workoutsList = Object.keys(workoutsObject).map(key => ({
+          ...workoutsObject[key],
+          uid: key,
+        }));
+        this.setState({
+          workouts: workoutsList,
+          loading: false,
+        });
+      } else {
+        this.setState({
+          loading: false,
+          workouts: [],
+        });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    const firebase = this.context;
+    firebase.workouts().off();
   }
 
   handleChangeRoutineInfo = (event) => {
@@ -169,7 +189,7 @@ class AddRoutine extends React.Component {
                       <ListItem key={workout.workoutId}>
                         <ListItemAvatar>
                           <Avatar>
-                            <Folder />
+                            <FitnessCenter />
                           </Avatar>
                         </ListItemAvatar>
                         <ListItemText
@@ -201,7 +221,6 @@ class AddRoutine extends React.Component {
           </Paper>
         </Grid>
         <Grid item xs={12} md={6}>
-
           <Paper style={{padding: 15, margin: 15}}>
             <Typography component="h1" variant="h5">
               All Workouts

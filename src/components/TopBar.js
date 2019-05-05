@@ -55,19 +55,25 @@ class TopBar extends React.Component {
             <Link to="/workouts/new/">
               <Button variant="outlined" size="small" className={classes.button}>
                 <Add className={classes.leftIcon} />
-                Add New
+                New Workout
               </Button>
             </Link>
             <Link to="/workouts/">
               <Button variant="outlined" size="small" className={classes.button}>
                 <List className={classes.leftIcon} />
-                List All
+                List Workouts
               </Button>
             </Link>
             <Link to="/routines/new">
               <Button variant="outlined" size="small" className={classes.button}>
                 <List className={classes.leftIcon} />
-                New
+                New Routine
+              </Button>
+            </Link>
+            <Link to="/routines">
+              <Button variant="outlined" size="small" className={classes.button}>
+                <List className={classes.leftIcon} />
+                List Routines
               </Button>
             </Link>
             <div className={classes.grow} />
