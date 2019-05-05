@@ -97,19 +97,23 @@ class AddRoutine extends React.Component {
     event.preventDefault();
     this.setState({loading: true});
     let routine = {...this.state.routine}
-    routine.workouts = routine.workouts.push(this.state.selectedWorkout)
-    this.setState({loading: false});
+    routine.workouts = routine.workouts.concat(this.state.selectedWorkout)
+    this.setState({routine: routine, loading: false});
+  }
+
+  handleDeleteWorkout = (workout, event) => {
+    event.preventDefault();
+    this.setState({loading: true});
+    let routine = {...this.state.routine}
+    routine.workouts = routine.workouts.filter(i => i.workoutId !== workout.workoutId)
+    this.setState({routine: routine, loading: false});
   }
 
   render() {
-    console.log(this.state)
     const { routine, workouts, selectedWorkout, loading } = this.state;
     return(
       <Grid container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justify="center"
+        spacing={16}
       >
         <Grid item xs={12} md={6}>
           <Paper style={{padding: 15, margin: 15}}>
@@ -155,6 +159,36 @@ class AddRoutine extends React.Component {
                          />}
                 label="Active?"
               />
+              <Paper style={{padding: 15, margin: 15}}>
+                <Typography variant="h6">
+                  Routine Workouts
+                </Typography>
+                <div>
+                  <List dense={false}>
+                    {this.state.routine.workouts.map(workout =>
+                      <ListItem key={workout.workoutId}>
+                        <ListItemAvatar>
+                          <Avatar>
+                            <Folder />
+                          </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={workouts.filter(w => w.uid === workout.workoutId )[0].name}
+                          secondary={workout.sets + ' sets of ' + workout.reps + ' reps' }
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            aria-label="Delete"
+                            onClick={this.handleDeleteWorkout.bind(this, workout)}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    )}
+                  </List>
+                </div>
+              </Paper>
               <Button
                 type="submit"
                 fullWidth
@@ -167,35 +201,7 @@ class AddRoutine extends React.Component {
           </Paper>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Paper style={{padding: 15, margin: 15}}>
-            <Typography variant="h6">
-              Routine Workouts
-            </Typography>
-            <div>
-              <List dense={false}>
-                {this.state.routine.workouts.map(workout =>
-                  <ListItem key={workout.workoutId}>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <Folder />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={workouts.filter(w => w.uid === workout.workoutId )[0].name}
-                      secondary={workout.sets + ' sets of ' + workout.reps + ' reps' }
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton aria-label="Delete">
-                        <Delete />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                )}
-              </List>
-            </div>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
+
           <Paper style={{padding: 15, margin: 15}}>
             <Typography component="h1" variant="h5">
               All Workouts
@@ -238,11 +244,10 @@ class AddRoutine extends React.Component {
               </FormControl>
               <Button
                 type="submit"
-                fullWidth
                 variant="contained"
                 color={loading ? "secondary" : "primary"}
               >
-                {loading ? <CircularProgress color="inherit" size={24} /> : "Submit"}
+                {loading ? <CircularProgress color="inherit" size={24} /> : "Add"}
               </Button>
             </form>
           </Paper>
