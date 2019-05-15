@@ -23,7 +23,7 @@ const bodyParts = [
   'Back',
 ];
 
-const initialState = {workout: {name: "", bodyParts: [], active: true}, loading: false};
+const initialState = {workout: {name: "", link: "", bodyParts: [], active: true}, loading: false};
 
 class AddWorkOut extends React.Component {
 
@@ -94,6 +94,16 @@ class AddWorkOut extends React.Component {
                     </MenuItem>
                   ))}
                 </Select>
+              </FormControl>
+              <FormControl margin="normal" required fullWidth>
+                <InputLabel htmlFor="link">Link</InputLabel>
+                <Input
+                  id="link"
+                  name="link"
+                  value={workout.link}
+                  autoFocus
+                  onChange={this.handleChange}
+                />
               </FormControl>
               <FormControlLabel
                 control={<Checkbox
