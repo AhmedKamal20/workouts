@@ -1,36 +1,35 @@
 import React from 'react';
 import { FirebaseContext } from '../clients/Firebase';
 
-import uuidv4 from '../libs/uuidv4';
+import {
+  Avatar,
+  Checkbox,
+  Grid,
+  IconButton,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core/';
 
-import Button from '@material-ui/core/Button'
-import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
-import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-
-import { FitnessCenter, Delete } from '@material-ui/icons';
+import {
+  FitnessCenter,
+  Delete,
+  ExpandMore,
+} from '@material-ui/icons';
 
 const initialState = {
     workouts: [],
     routines: [],
     loading: false
 };
-
 
 class AddRoutine extends React.Component {
 
@@ -86,74 +85,102 @@ class AddRoutine extends React.Component {
     firebase.routines().off();
   }
 
+  getWorkoutName = (workoutId) => {
+    const { workouts } = this.state;
+    try {
+      return workouts.filter(w => w.uid === workoutId )[0].name
+    } catch(e) {
+      return ""
+    }
+  }
+
+  handleDelete = (uid) => {
+    const firebase = this.context;
+    if (uid) {
+      firebase.routine(uid).remove();
+    }
+  }
+
+  handleExpandClick = () => {
+    this.setState(state => ({ expanded: !state.expanded }));
+  };
+
   render() {
-    const { routines, workouts, loading } = this.state;
+    const { routines, loading } = this.state;
     return(
       <Grid container
         spacing={16}
+        direction="column"
+        alignItems="center"
+        justify="center"
       >
         <Grid item xs={12} md={6}>
-          {this.state.routines.map(routine =>
-            <Paper style={{padding: 15, margin: 15}}>
-              <Typography component="h1" variant="h5">
-                Routine Info
-              </Typography>
-              <form onSubmit={this.handleSubmitRoutineInfo}>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="name">Name</InputLabel>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={routine.name}
-                    readOnly
-                    autoFocus
-                  />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="bodyParts">Body Parts</InputLabel>
-                  <Select
-                    multiple
-                    name="bodyParts"
-                    value={routine.bodyParts}
-                    readOnly
-                    input={<Input id="bodyParts" />}
-                    renderValue={selected => selected.join(', ')}
-                  >
-                  </Select>
-                </FormControl>
-                <FormControlLabel
-                  control={<Checkbox
-                             name="active"
-                             value="active"
-                             checked={routine.active}
-                             readOnly
-                             color="primary"
-                           />}
-                  label="Active?"
-                />
-              </form>
-              <Typography variant="h6">
-                Routine Workouts
-              </Typography>
-              <div>
-                <List dense={false}>
-                  {routine.workouts.map(workout =>
-                    <ListItem key={workout.workoutId}>
-                      <ListItemAvatar>
-                        <Avatar>
-                          <FitnessCenter />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={workouts.filter(w => w.uid === workout.workoutId )[0].name}
-                        secondary={workout.sets + ' sets of ' + workout.reps + ' reps' }
-                      />
-                    </ListItem>
-                  )}
-                </List>
-              </div>
-            </Paper>
-          )}
+          <Paper>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell align="right">Body Parts</TableCell>
+                  <TableCell align="right">Active?</TableCell>
+                  <TableCell align="right">Delete</TableCell>
+                  <TableCell align="right">More</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {routines.map(routine => (
+                  <React.Fragment key={routine.uid}>
+                  <TableRow>
+                    <TableCell>
+                      {routine.name}
+                    </TableCell>
+                    <TableCell align="right">{routine.bodyParts && routine.bodyParts.join(', ')}</TableCell>
+                    <TableCell align="right">
+                      <Checkbox disabled checked={routine.active} value="checkedE" />
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton aria-label="Delete" onClick={() => this.handleDelete(routine.uid)}>
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        onClick={this.handleExpandClick.bind(this)}
+                        aria-expanded={this.state.expanded}
+                        aria-label="Show more"
+                      >
+                        <ExpandMore />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                  { this.state.expanded &&
+                    <TableRow>
+                      <TableCell align="left" colSpan={6}>
+                        <List dense={false}>
+                          {routine.workouts.map(workout =>
+                            <ListItem key={workout.workoutId}>
+                              <ListItemAvatar>
+                                <Avatar>
+                                  <FitnessCenter />
+                                </Avatar>
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={this.getWorkoutName(workout.workoutId)}
+                                secondary={workout.sets + ' sets of ' + workout.reps + ' reps' }
+                              />
+                            </ListItem>
+                          )}
+                        </List>
+                      </TableCell>
+                    </TableRow>
+                  }
+                  </React.Fragment>
+                ))}
+              </TableBody>
+            </Table>
+            {loading &&
+              <LinearProgress color="secondary" />
+            }
+          </Paper>
         </Grid>
       </Grid>
     )

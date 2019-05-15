@@ -3,27 +3,32 @@ import { FirebaseContext } from '../clients/Firebase';
 
 import uuidv4 from '../libs/uuidv4';
 
-import Button from '@material-ui/core/Button'
-import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
-import Paper from '@material-ui/core/Paper'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  Input,
+  InputLabel,
+  Paper,
+  Typography,
+  Grid,
+  Select,
+  Checkbox,
+  MenuItem,
+  ListItemText,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemSecondaryAction,
+  IconButton,
+} from '@material-ui/core';
 
-import { FitnessCenter, Delete } from '@material-ui/icons';
+import {
+  FitnessCenter,
+  Delete,
+} from '@material-ui/icons';
 
 const bodyParts = [
   'Chest',
@@ -53,7 +58,7 @@ class AddRoutine extends React.Component {
   constructor() {
     super();
     this.state = initialState;
-  }
+  };
 
   componentDidMount() {
     this.setState({ loading: true });
@@ -77,12 +82,12 @@ class AddRoutine extends React.Component {
         });
       }
     });
-  }
+  };
 
   componentWillUnmount() {
     const firebase = this.context;
     firebase.workouts().off();
-  }
+  };
 
   handleChangeRoutineInfo = (event) => {
     let routine = {...this.state.routine}
